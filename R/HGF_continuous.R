@@ -295,9 +295,9 @@ setMethod("plot.distributions",
                 weights = object@simulations[[t]][,"w"]
 
                 sample = sample[ weights > 0 ]
-                weights = weights[ weights > 0]/sum(weights)
+                weights = weights[ weights > 0]/sum(weights, na.rm = T)
 
-                sample_limits = find_optimal_plot_limits_2(sample, weights)
+                sample_limits = find_optimal_plot_limits_3(sample, weights)
 
                 sample_min = sample_limits[1]
                 sample_max = sample_limits[2]
@@ -344,6 +344,8 @@ setMethod("plot.distributions",
           }
 )
 
+
+
 find_optimal_plot_limits = function(sample, threshold=0.005, breaks=100){
 
   sample_hist = hist(sample, plot = F, breaks = breaks)
@@ -357,6 +359,43 @@ find_optimal_plot_limits = function(sample, threshold=0.005, breaks=100){
 
   x_min = sample_hist$breaks[min(to_keep)]
   x_max = sample_hist$breaks[max(to_keep) + 1]
+
+  return(c(x_min, x_max))
+
+}
+
+
+find_optimal_plot_limits_3 = function(obs_sample, obs_weights,
+                                      cutoff=0.01,
+                                      breaks=100,
+                                      threshold=0.005){
+
+  to_keep = !is.na(obs_sample) & !is.na(obs_weights)
+  obs_sample = obs_sample[to_keep]
+  obs_weights = obs_weights[to_keep]
+
+  obs_sample = obs_sample[obs_weights != 0 ]
+  obs_weights = obs_weights[obs_weights != 0 ]
+
+  increasing = order(obs_sample)
+  obs_sample = obs_sample[increasing]
+
+  min_pos = round(length(obs_sample)*cutoff)
+  max_pos = length(obs_sample) - min_pos + 1
+  obs_sample = obs_sample[min_pos:max_pos]
+  obs_weights = obs_weights[min_pos:max_pos]
+
+  sample_hist = hist(obs_sample, plot = F, breaks = breaks)
+
+  # 'density' sometimes fails for some reason
+  densities = sample_hist$counts/sum(sample_hist$counts)
+
+  max_dens = max(sample_hist$density)
+
+  to_keep = which(sample_hist$density > max_dens*threshold)
+
+  x_min = sample_hist$breaks[min(to_keep)]
+  x_max = sample_hist$breaks[max(to_keep)]
 
   return(c(x_min, x_max))
 
@@ -435,4 +474,15 @@ find_optimal_plot_limits_2 = function(obs_sample, obs_weights=NA,
   return(c(x_min, x_max))
 
 }
+
+
+u = c( rnorm(100, sd = 1) + 1:100/10, rnorm(100, sd=0.2)+10 )
+
+aaa = HGF_continuous(u=u)
+plot(aaa)
+
+aaa = fit(aaa, method="MCMC")
+plot.distributions(aaa, timestamps = c(1,10,40,80), levels = c(1,2,3))
+
+
 
