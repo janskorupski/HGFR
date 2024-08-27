@@ -2,6 +2,19 @@
 # Define the HGF_binary subclass inheriting from HGF
 setClass("HGF_binary",
          contains = "HGF",
+         slots = c(
+
+           no_of_levels    = "numeric",
+           no_of_moments   = "numeric",
+           parameters      = "list",
+           priors          = "list",
+           update_formulas = "list",
+           u               = "numeric",
+           moments         = "list",
+           simulations     = "list",
+           sim_preds_      = "numeric"
+
+         ),
          prototype = list(
 
            no_of_levels    = 3,
@@ -11,7 +24,8 @@ setClass("HGF_binary",
            update_formulas = list(),
            u               = NA_real_,
            moments         = list(),
-           simulations     = list()
+           simulations     = list(),
+           sim_preds_      = numeric()
 
          )
 )
@@ -53,7 +67,8 @@ HGF_binary <- function(
       update_formulas = update_formulas,
       u = u,
       moments = moments,
-      simulations = list())
+      simulations = list(),
+      sim_preds_ = numeric())
 
   if( length(object@u) > 1 ){
     object = fit(object, method="VB")
@@ -149,11 +164,14 @@ mathys_MCMC = function(learner){
               size = 1,
               prob = learner@priors$mu[1])
   learner@simulations[[1]] = data.frame(x1=x1, x2=x2, x3=x3)
+  learner@sim_preds_[1] = learner@priors$mu[1]
 
 
   for( t in 2:(length(learner@u)) ){
 
     res = matrix(nrow = 0, ncol = learner@no_of_levels)
+
+    prob_of_ones=c()
 
     while(dim(res)[1] < N){
       m = N - dim(res)[1]
@@ -173,12 +191,16 @@ mathys_MCMC = function(learner){
                   size = 1,
                   prob = s(x2))
 
+      prob_of_ones = c(prob_of_ones, s(x2))
+
       add = matrix(c(x1,x2,x3), ncol = learner@no_of_levels)
       add = add[ add[,1] == learner@u[t] , ]
       res = rbind(res, add)
+
     }
 
     learner@simulations[[t]] = as.data.frame(res)
+    learner@sim_preds_[t] = mean(prob_of_ones)
     names(learner@simulations[[t]]) = c("x1", "x2", "x3")
 
   }
@@ -290,3 +312,4 @@ setMethod("plot.distributions",
 
           }
 )
+
