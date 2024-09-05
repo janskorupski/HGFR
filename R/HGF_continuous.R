@@ -158,7 +158,7 @@ HGF_continuous_VB = function(learner){
   return( learner )
 }
 
-HGF_continuous_IS = function(learner){
+HGF_continuous_BF = function(learner){
   N = 1e4
 
   if( ! is.nan(learner@u[1]) ){
@@ -227,6 +227,7 @@ HGF_continuous_IS = function(learner){
   return( learner )
 }
 
+
 # Define a method for fit specific to HGF_continuous
 setMethod("fit",
           signature(object = "HGF_continuous", method = "character"),
@@ -235,8 +236,8 @@ setMethod("fit",
             if( method == "VB"){
               return( HGF_continuous_VB(object))
             }
-            if( method == "IS" ){
-              return( HGF_continuous_IS(object))
+            if( method == "BF" ){
+              return( HGF_continuous_BF(object))
             }
 
           }
@@ -279,7 +280,6 @@ setMethod("plot",
 
 
 
-# Define a method for fit specific to HGF_binary
 setMethod("plot.distributions",
           signature(object = "HGF_continuous", timestamps="numeric", levels="numeric"),
           function(object, timestamps, levels=c(2,3), ...) {
