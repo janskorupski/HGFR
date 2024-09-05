@@ -158,13 +158,12 @@ HGF_continuous_VB = function(learner){
   return( learner )
 }
 
-HGF_continuous_MCMC = function(learner){
+HGF_continuous_IS = function(learner){
   N = 1e4
 
   if( ! is.nan(learner@u[1]) ){
     learner@u = c(NaN, learner@u)
   }
-
 
   kappa = learner@parameters$kappa
   omega = learner@parameters$omega
@@ -236,8 +235,8 @@ setMethod("fit",
             if( method == "VB"){
               return( HGF_continuous_VB(object))
             }
-            if( method == "MCMC" ){
-              return( HGF_continuous_MCMC(object))
+            if( method == "IS" ){
+              return( HGF_continuous_IS(object))
             }
 
           }
@@ -423,7 +422,6 @@ find_optimal_plot_limits_2 = function(obs_sample, obs_weights=NA,
     obs_weights = rep(1, length(obs_sample)) # make more efficient later, this wastes time <---------------<<<<<
   }
 
-  ssss = obs_sample
   to_keep = (!is.na(obs_sample)) & (!is.na(obs_weights))
   obs_sample = obs_sample[to_keep  ]
   obs_weights = obs_weights[to_keep]
@@ -481,7 +479,7 @@ u = c( rnorm(100, sd = 1) + 1:100/10, rnorm(100, sd=0.2)+10 )
 aaa = HGF_continuous(u=u)
 plot(aaa)
 
-aaa = fit(aaa, method="MCMC")
+aaa = fit(aaa, method="IS")
 plot.distributions(aaa, timestamps = c(1,10,40,80), levels = c(1,2,3))
 
 

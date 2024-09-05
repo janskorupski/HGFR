@@ -141,7 +141,7 @@ mathys_VB = function(learner){
   return( learner )
 }
 
-mathys_MCMC = function(learner){
+mathys_RS = function(learner){
   N = 1e4
 
   if( ! is.nan(learner@u[1]) ){
@@ -215,8 +215,8 @@ setMethod("fit",
             if( method == "VB"){
               return( mathys_VB(object))
             }
-            if( method == "MCMC" ){
-              return( mathys_MCMC(object))
+            if( method == "RS" ){
+              return( mathys_RS(object))
             }
 
           }
