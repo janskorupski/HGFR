@@ -198,7 +198,7 @@ HGF_continuous_IS = function(learner){
 
     res = list()
 
-    x_prev = learner@simulations[[t-1]][[paste0('x', level)]][sample_idx]
+    x_prev = learner@simulations[[t-1]][[paste0('x', learner@no_of_levels)]][sample_idx]
     res[[paste0("x", learner@no_of_levels)]] =
       rnorm(N,
             mean = x_prev,
