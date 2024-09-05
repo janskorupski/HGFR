@@ -329,7 +329,7 @@ setMethod("plot.distributions",
                                alpha=0.3) +
                   geom_line(aes(x=x, y=px),
                             data=df2) +
-                  coord_cartesian(xlim=c(xlim_min,xlim_max)) +
+                  xlim(c(xlim_min,xlim_max)) +
                   ggtitle(paste( "level " , as.character(level),
                                  " time " , as.character(t)))
 
@@ -479,7 +479,7 @@ u = c( rnorm(100, sd = 1) + 1:100/10, rnorm(100, sd=0.2)+10 )
 aaa = HGF_continuous(u=u)
 plot(aaa)
 
-aaa = fit(aaa, method="IS")
+aaa = fit(aaa, method="BF")
 plot.distributions(aaa, timestamps = c(1,10,40,80), levels = c(1,2,3))
 
 
