@@ -20,7 +20,7 @@ setClass("HGF_binary",
            no_of_levels    = 3,
            no_of_moments   = 2,
            parameters      = list("kappa"=1.4, "omega"=-2.2, "theta"=0.5),
-           priors          = list("mu" = c(0.5, 1, 1), "sigma" = c(NaN, 1, 1)),
+           priors          = list("mu" = c(0.5, 0, 0), "sigma" = c(NaN, 1, 1)),
            update_formulas = list(),
            u               = NA_real_,
            moments         = list(),
@@ -36,7 +36,7 @@ HGF_binary <- function(
                     no_of_levels = 3,
                     no_of_moments = 2,
                     parameters = list("kappa"=1.4, "omega"=-2.2, "theta"=0.5),
-                    priors = list("mu" = c(0.5, 1, 1), "sigma" = c(NaN, 1, 1)),
+                    priors = list("mu" = c(0.5, 0, 0), "sigma" = c(NaN, 1, 1)),
                     update_formulas = list()){
   u = c(NaN, u)
 
