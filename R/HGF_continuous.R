@@ -7,7 +7,7 @@ setClass("HGF_continuous",
            no_of_levels    = 3,
            no_of_moments   = 2,
            parameters      = list("kappa"=rep(1.4,3), "omega"=rep(-2.2, 3), "theta"=0.5, "alpha"=1),
-           priors          = list("mu" = c(0, 1, 1), "sigma" = c(1, 1, 1)),
+           priors          = list("mu" = c(0, 0, 0), "sigma" = c(1, 1, 1)),
            update_formulas = list(),
            u               = NA_real_,
            moments         = list(),
@@ -22,7 +22,7 @@ HGF_continuous <- function(
     no_of_levels = 3,
     no_of_moments = 2,
     parameters = list("kappa"=rep(1.4,3), "omega"=rep(-2.2, 3), "theta"=0.5, "alpha"=1),
-    priors = list("mu" = c(0, 1, 1), "sigma" = c(1, 1, 1)),
+    priors = list("mu" = c(0, 0, 0), "sigma" = c(1, 1, 1)),
     update_formulas = list()){
   u = c(NaN, u)
 
