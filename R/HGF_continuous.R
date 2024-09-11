@@ -303,8 +303,8 @@ setMethod("plot.distributions",
 
                 mu = object@moments$mu[t, level]
                 sd = object@moments$sigma[t, level]
-                vb_min = mu - 3*sd
-                vb_max = mu + 3*sd
+                vb_min = mu - 3*sqrt(sd)
+                vb_max = mu + 3*sqrt(sd)
 
                 xlim_min = min(c( sample_min,
                                   vb_min))

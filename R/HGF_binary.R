@@ -279,8 +279,8 @@ setMethod("plot.distributions",
 
                 mu = object@moments$mu[t, level]
                 sd = object@moments$sigma[t, level]
-                vb_min = mu - 3*sd
-                vb_max = mu + 3*sd
+                vb_min = mu - 3*sqrt(sd)
+                vb_max = mu + 3*sqrt(sd)
 
                 xlim_min = min(c( sample_min,
                                   vb_min))
@@ -288,7 +288,7 @@ setMethod("plot.distributions",
                                  vb_max))
 
                 x = seq(xlim_min, xlim_max, length.out=100)
-                px = dnorm(x, mean = mu, sd = sd)
+                px = dnorm(x, mean = mu, sd = sqrt(sd))
 
                 df1 = data.frame(x=sample)
                 df2 = data.frame(x=x,px=px)
