@@ -173,7 +173,7 @@ HGF_continuous_BF = function(learner){
   ## First time based on priors
   learner@simulations[[1]] = list()
 
-  for( level in 1:learner@no_of_levels){
+  for( level in learner@no_of_levels:1){
 
     learner@simulations[[1]][[paste0("x", level)]] = rnorm(N,
                                                            mean = learner@priors$mu[level],
