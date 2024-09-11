@@ -156,10 +156,10 @@ mathys_RS = function(learner){
   ## First time based on priors
   x3 = rnorm(N,
              mean = learner@priors$mu[3],
-             sd = learner@priors$sigma[3])
+             sd = sqrt(learner@priors$sigma[3]))
   x2 = rnorm(N,
              mean = learner@priors$mu[2],
-             sd = learner@priors$sigma[2])
+             sd = sqrt(learner@priors$sigma[2]))
   x1 = rbinom(N,
               size = 1,
               prob = learner@priors$mu[1])

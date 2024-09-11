@@ -80,9 +80,9 @@ HGF_continuous_VB = function(learner){
   v = matrix(nrow = (length(learner@u)),
              ncol = learner@no_of_levels)
   pi_hat = matrix(nrow = (length(learner@u)),
-             ncol = learner@no_of_levels)
+                  ncol = learner@no_of_levels)
   delta = matrix(nrow = (length(learner@u)),
-                     ncol = learner@no_of_levels)
+                 ncol = learner@no_of_levels)
 
   kappa = c(learner@parameters$kappa)
   omega = c(learner@parameters$omega)
@@ -111,7 +111,7 @@ HGF_continuous_VB = function(learner){
     mu[t, 1] = mu[t-1, 1] + (sigma[t, 1]/ alpha)*delta_u
 
     delta[t, 1] = ( (sigma[t, 1] + (mu[t, 1] - mu[t-1, 1])**2 ) /
-                          (sigma[t-1, 1] + v[t, 1]) ) - 1
+                      (sigma[t-1, 1] + v[t, 1]) ) - 1
 
     # OTHER LEVELS (assumed normal) # based on Mathys et al. 2014 equations 9-14
     for( level in 2:learner@no_of_levels){
@@ -176,8 +176,8 @@ HGF_continuous_BF = function(learner){
   for( level in 1:learner@no_of_levels){
 
     learner@simulations[[1]][[paste0("x", level)]] = rnorm(N,
-                                                         mean = learner@priors$mu[level],
-                                                         sd = learner@priors$sigma[level])
+                                                           mean = learner@priors$mu[level],
+                                                           sd = sqrt(learner@priors$sigma[level]))
 
   }
   learner@simulations[[1]][["w"]] = rep(1, N)
@@ -202,24 +202,24 @@ HGF_continuous_BF = function(learner){
     res[[paste0("x", learner@no_of_levels)]] =
       rnorm(N,
             mean = x_prev,
-            sd = theta)
+            sd = sqrt(theta))
 
     for( level in (learner@no_of_levels-1):1){
 
       x_prev = learner@simulations[[t-1]][[paste0('x', level)]][sample_idx]
 
       x_above = res[[paste0("x", level+1)]]
-      sds = exp( kappa[level]*x_above + omega[level])
+      vars = exp( kappa[level]*x_above + omega[level])
 
       res[[paste0("x", level)]] = rnorm(N,
                                         mean = x_prev,
-                                        sd = sds)
+                                        sd = sqrt(vars))
     }
 
 
     res[["w"]] = dnorm(learner@u[t],
                        mean = res[["x1"]],
-                       sd = alpha)
+                       sd = sqrt(alpha))
 
     learner@simulations[[t]] = as.data.frame(res)
 
@@ -312,7 +312,7 @@ setMethod("plot.distributions",
                                  vb_max))
 
                 x = seq(xlim_min, xlim_max, length.out=100)
-                px = dnorm(x, mean = mu, sd = sd)
+                px = dnorm(x, mean = mu, sd = sqrt(sd))
 
                 df1 = data.frame(x=sample, w=weights)
                 df2 = data.frame(x=x,px=px)
@@ -473,6 +473,7 @@ find_optimal_plot_limits_2 = function(obs_sample, obs_weights=NA,
 
 }
 
+set.seed(1234)
 
 u = c( rnorm(100, sd = 1) + 1:100/10, rnorm(100, sd=0.2)+10 )
 
