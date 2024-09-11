@@ -173,7 +173,7 @@ HGF_continuous_BF = function(learner){
   ## First time based on priors
   learner@simulations[[1]] = list()
 
-  for( level in learner@no_of_levels:1){
+  for( level in 1:learner@no_of_levels){
 
     learner@simulations[[1]][[paste0("x", level)]] = rnorm(N,
                                                            mean = learner@priors$mu[level],
@@ -197,6 +197,9 @@ HGF_continuous_BF = function(learner){
     }
 
     res = list()
+    for( level in 1:learner@no_of_levels ){
+      res[[paste0('x', level)]] = NA
+    }
 
     x_prev = learner@simulations[[t-1]][[paste0('x', learner@no_of_levels)]][sample_idx]
     res[[paste0("x", learner@no_of_levels)]] =
@@ -473,15 +476,18 @@ find_optimal_plot_limits_2 = function(obs_sample, obs_weights=NA,
 
 }
 
-set.seed(1234)
+if(F){
+  set.seed(1234)
 
-u = c( rnorm(100, sd = 1) + 1:100/10, rnorm(100, sd=0.2)+10 )
+  u = c( rnorm(100, sd = 1) + 1:100/10, rnorm(100, sd=0.2)+10 )
 
-aaa = HGF_continuous(u=u)
-plot(aaa)
+  aaa = HGF_continuous(u=u)
+  plot(aaa)
 
-aaa = fit(aaa, method="BF")
-plot.distributions(aaa, timestamps = c(1,10,40,80), levels = c(1,2,3))
+  aaa = fit(aaa, method="BF")
+  plot.distributions(aaa, timestamps = c(1,10,40,80), levels = c(1,2,3))
+}
+
 
 
 
