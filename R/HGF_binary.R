@@ -228,34 +228,68 @@ setMethod("plot",
           function(object, ...) {
             # Implementation of plot method specific to HGF_binary
             learner = object
+
             N = length(learner@u)
 
+            lvl1_df = data.frame(expand.grid(t=1:N,
+                                             pred=NA))
+
+            lvl1_df[, "pred" ] =
+              s( learner@moments$mu[,2] )
+
             lvl1 = ggplot() +
-              geom_point(aes(x=1:N,
-                             y=learner@moments$mu[,1])) +
-              geom_line(aes(x=1:N,
-                            y=s( learner@moments$mu[, 2] )))
+              geom_line(aes(x=t,
+                            y=pred), data=lvl1_df) +
+              geom_point(aes(x=2:N,
+                             y=learner@u[-1]))
+              ylab(TeX("$x_1$"))
+
+            # LEVEL 2
+            lvl2_df = data.frame(expand.grid(t=1:N,
+                                             mu=NA,
+                                             lCI=NA,
+                                             uCI=NA))
+            lvl2_df[, "mu"] = learner@moments$mu[,2]
+            lvl2_df[, "lCI"] = learner@moments$mu[,2] - learner@moments$sigma[,2]*1
+            lvl2_df[, "uCI"] = learner@moments$mu[,2] + learner@moments$sigma[,2]*1
+
+            lvl2 = ggplot(lvl2_df) +
+              geom_line(aes(x=t,
+                            y=mu)) +
+              geom_ribbon(aes(x=t,
+                              ymin=lCI,
+                              ymax=uCI),
+                          alpha=0.2) +
+              theme(axis.text.x = element_blank(),
+                    axis.ticks.x = element_blank(),
+                    axis.title.x = element_blank()) +
+              ylab(TeX("$x_2$"))
+
+            # LEVEL 3
+
+            lvl3_df = data.frame(expand.grid(t=1:N,
+                                             mu=NA,
+                                             lCI=NA,
+                                             uCI=NA))
+            lvl3_df[, "mu"] = learner@moments$mu[,3]
+            lvl3_df[, "lCI"] = learner@moments$mu[,3] - sqrt(learner@moments$sigma[,3])*1
+            lvl3_df[, "uCI"] = learner@moments$mu[,3] + sqrt(learner@moments$sigma[,3])*1
+
+            lvl3 = ggplot(lvl3_df) +
+              geom_line(aes(x=t,
+                            y=mu)) +
+              geom_ribbon(aes(x=t,
+                              ymin=lCI,
+                              ymax=uCI),
+                          alpha=0.2)+
+              theme(axis.text.x = element_blank(),
+                    axis.ticks.x = element_blank(),
+                    axis.title.x = element_blank()) +
+              ylab(TeX("$x_3$")) +
+              ggtitle(TeX("$70\\%$ confidence intervals of $\\hat{q}_i$ distributions"))
 
 
-            lvl2 = ggplot() +
-              geom_line(aes(x=1:N,
-                            y=learner@moments$mu[,2])) +
-              geom_ribbon(aes(x=1:N,
-                              ymin=learner@moments$mu[,2]-learner@moments$sigma[,2]*1,
-                              ymax=learner@moments$mu[,2]+learner@moments$sigma[,2]*1),
-                          alpha=0.2)
-
-            lvl3 = ggplot() +
-              geom_line(aes(x=1:N,
-                            y=learner@moments$mu[,3])) +
-              geom_ribbon(aes(x=1:N,
-                              ymin=learner@moments$mu[,3]-learner@moments$sigma[,3]*1,
-                              ymax=learner@moments$mu[,3]+learner@moments$sigma[,3]*1),
-                          alpha=0.2)
-
-
-
-            plot_grid(lvl3, lvl2, lvl1, ncol=1)
+            plot_grid(lvl3, lvl2, lvl1, ncol=1, align = "v")
           }
 )
 
@@ -300,8 +334,11 @@ setMethod("plot.distributions",
                                alpha=0.3) +
                   geom_line(aes(x=x, y=px),
                             data=df2) +
-                  ggtitle(paste( "level " , as.character(level),
-                                 " time " , as.character(t)))
+                  ylab(TeX(paste( "$q_" , as.character(level),
+                                  " ^{ " , as.character(t), "}$"))) +
+                  theme(axis.text.x = element_blank(),
+                        axis.ticks.x = element_blank(),
+                        axis.title.x = element_blank())
 
               }
 
