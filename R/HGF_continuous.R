@@ -105,7 +105,7 @@ HGF_continuous_VB = function(learner){
 
     pi_hat[t, 1] = 1/( sigma[t-1, 1] + v[t, 1] )
 
-    delta_u = learner@u[t] - mu[t-1, 1]  ### ------------------------------------<<< there's probably a mistake in the Mathys paper
+    delta_u = learner@u[t] - mu[t-1, 1]
 
     sigma[t, 1] = 1/(pi_hat[t, 1] + 1/alpha)
     mu[t, 1] = mu[t-1, 1] + (sigma[t, 1]/ alpha)*delta_u
